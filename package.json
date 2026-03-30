@@ -16,5 +16,8 @@
     "url": "https://github.com/JoshBoyne/my-electron-app/issues"
   },
   "homepage": "https://github.com/JoshBoyne/my-electron-app#readme",
-  "description": ""
+  "description": "",
+  "devDependencies": {
+    "electron": "^41.1.0"
+  }
 }
