@@ -1,15 +1,85 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Hello World!</title>
-    <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'" />
+  <title>Productivity Dashboard</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-    <h1>Hello World!</h1>
-    <p>Current theme source: <strong id="theme-source">System</strong></p>
 
-    <button id="toggle-dark-mode">Toggle Dark Mode</button>
-    <button id="reset-to-system">Reset to System Theme</button>
+  <nav>
+    <button class="tab-btn active" data-tab="notes">Notes</button>
+    <button class="tab-btn"        data-tab="mood">Mood</button>
+    <button class="tab-btn"        data-tab="pomodoro">Pomodoro</button>
+  </nav>
+
+  <main>
+
+    <section id="notes" class="tab-panel active">
+      <h2>Quick Notes</h2>
+
+      <div class="notes-compose">
+        <textarea id="notes-input" placeholder="Write a note… (Ctrl+Enter to save)" rows="3"></textarea>
+        <div class="notes-compose-actions">
+          <button id="notes-add-btn" class="btn-primary">Add Note</button>
+          <span class="notes-hint">Ctrl+Enter to save</span>
+        </div>
+      </div>
+
+      <ul id="notes-list"></ul>
+    </section>
+
+    <section id="mood" class="tab-panel">
+      <h2>Daily Mood</h2>
+
+      <div class="mood-card">
+        <div id="mood-picker"></div>
+
+        <div class="mood-note-row">
+          <textarea id="mood-note" placeholder="Optional note… (max 140 chars)" rows="2" maxlength="140"></textarea>
+          <button id="mood-save-btn" class="btn-primary">Save</button>
+        </div>
+
+        <p id="mood-feedback" class="mood-feedback"></p>
+      </div>
+
+      <h2>Last 7 Days</h2>
+      <ul id="mood-history"></ul>
+    </section>
+
+    <section id="pomodoro" class="tab-panel" data-phase="idle">
+      <div class="pomodoro-ring-wrapper">
+        <svg width="220" height="220" viewBox="0 0 220 220">
+          <!-- background track -->
+          <circle cx="110" cy="110" r="90" fill="none" stroke="#0f3460" stroke-width="10" />
+          <circle id="pomodoro-ring" cx="110" cy="110"
+                  fill="none" stroke="#e94560" stroke-width="10"
+                  stroke-linecap="round"
+                  transform="rotate(-90 110 110)" />
+        </svg>
+        <div class="pomodoro-center">
+          <span id="pomodoro-time">25:00</span>
+          <span id="pomodoro-phase">Ready</span>
+        </div>
+      </div>
+
+      <div class="pomodoro-controls">
+        <button id="pomodoro-start-work"  class="btn-primary">Start Focus</button>
+        <button id="pomodoro-start-break" class="btn-secondary">Start Break</button>
+        <button id="pomodoro-reset"       class="btn-secondary">Reset</button>
+      </div>
+    </section>
+
+  </main>
+
+  <script src="storage/storage.js"></script>
+  <script src="features/notes/notes.js"></script>
+  <script src="features/mood/mood.js"></script>
+  <script src="features/pomodoro/pomodoro.js"></script>
+  <script src="renderer.js"></script>
+
 </body>
 </html>

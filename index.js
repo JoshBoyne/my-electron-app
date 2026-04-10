@@ -1,69 +1,53 @@
-const { app, BrowserWindow, ipcMain, nativeTheme } = require('electron/main')
-const path = require('node:path')
+const { app, BrowserWindow, ipcMain } = require('electron');
+const path = require('path');
+const fs = require('fs');
 
-/*function createWindow () {
+function getStorePath(name){
+  return path.join(app.getPath('userData'), `${name}.json`);
+}
+
+function readStore(name){
+  try{
+    return JSON.parse(fs.readFileSync(getStorePath(name), 'utf8'));
+  } catch{
+    return [];
+  }
+}
+
+function writeStore(name, data){
+  fs.writeFileSync(getStorePath(name), JSON.stringify(data, null, 2), 'utf8');
+}
+
+ipcMain.handle('notes:getAll', () => readStore('notes'));
+ipcMain.handle('notes:save',   (_, notes) => writeStore('notes', notes));
+
+ipcMain.handle('mood:getAll', () => readStore('mood'));
+ipcMain.handle('mood:save',   (_, entry) => {
+  const log = readStore('mood');
+  const idx = log.findIndex(e => e.date === entry.date);
+  if (idx !== -1) {
+    log[idx] = entry;
+  } else {
+    log.push(entry);
+  }
+  writeStore('mood', log);
+});
+
+function createWindow(){
   const win = new BrowserWindow({
     width: 800,
     height: 600,
     webPreferences: {
-      preload: path.join(__dirname, 'preload.js')
-    }
-  })
-
-  win.loadFile('index.html')
-}
-*/
-
-let progressInterval
-
-function createWindow(){
-    const win = new BrowserWindow()
-    
-    win.loadFile('index.html')
-
-    const INCREMENT = 0.03
-    const INTERVAL_DELAY = 100
-
-    let c = 0
-    progressInterval = setInterval(() => {
-        win.setProgressBar(c)
-
-        if(c < 2){
-            c += INCREMENT
-        }else {
-            c = (-INCREMENT * 5)
-        }
-    }, INTERVAL_DELAY)
+      preload: path.join(__dirname, 'preload.js'),
+      contextIsolation: true,
+      nodeIntegration: false, 
+    },
+  });
+  win.loadFile('index.html');
 }
 
-ipcMain.handle('dark-mode:toggle', () => {
-  if (nativeTheme.shouldUseDarkColors) {
-    nativeTheme.themeSource = 'light'
-  } else {
-    nativeTheme.themeSource = 'dark'
-  }
-  return nativeTheme.shouldUseDarkColors
-})
-
-ipcMain.handle('dark-mode:system', () => {
-  nativeTheme.themeSource = 'system'
-})
-
-app.whenReady().then(createWindow)
-
-// before the app is terminated, clear both timers
-app.on('before-quit', () => {
-  clearInterval(progressInterval)
-})
+app.whenReady().then(createWindow);
 
 app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
-    app.quit()
-  }
-})
-
-app.on('activate', () => {
-  if (BrowserWindow.getAllWindows().length === 0) {
-    createWindow()
-  }
-})
+  if(process.platform !== 'darwin') app.quit();
+});
