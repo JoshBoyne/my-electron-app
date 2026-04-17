@@ -14,6 +14,7 @@
     <button class="tab-btn active" data-tab="notes">Notes</button>
     <button class="tab-btn"        data-tab="mood">Mood</button>
     <button class="tab-btn"        data-tab="pomodoro">Pomodoro</button>
+    <button class="tab-btn"        data-tab="report">Report</button>
   </nav>
 
   <main>
@@ -73,9 +74,40 @@
       </div>
     </section>
 
+    <section id ="report" class="tab-panel">
+      <h2>Report</h2>
+
+      <div class="report-controls">
+        <button id="week-prev"><</button>
+        <button id="week-next">></button>
+        <button id="chart-week">Week</button>
+        <button id="chart-month">Month</button>
+      </div>
+
+      <div class="report-subtabs">
+        <button class="report-subtab-btn active" data-subtab="report-summary">Summary</button>
+        <button class="report-subtab-btn"        data-subtab="report-detail">Detail</button>
+        <button class="report-subtab-btn"        data-subtab="report-ranking">Ranking</button>
+      </div>
+      <div id="report-summary" class="report-subpanel active">
+          <p>Summary content goes here</p>
+        </div>
+
+        <div id="report-detail" class="report-subpanel">
+          <p>Detail content goes here</p>
+        </div>
+
+        <div id="report-ranking" class="report-subpanel">
+          <p>Ranking content goes here</p>
+        </div>
+
+      </section>
+
   </main>
 
   <script src="storage/storage.js"></script>
+  <script src="features/report/chart.js"></script>
+  <script src="features/report/report.js"></script>
   <script src="features/notes/notes.js"></script>
   <script src="features/mood/mood.js"></script>
   <script src="features/pomodoro/pomodoro.js"></script>

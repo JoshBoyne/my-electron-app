@@ -12,6 +12,14 @@ const Storage = (() => {
       getAll: ()      => window.electronAPI.mood.getAll(),
       save:   (entry) => window.electronAPI.mood.save(entry),
     },
+    sessions: {
+      getAll: () => window.electronAPI.sessions.getAll(),
+      add: (session) => window.electronAPI.sessions.add(session),
+    },
+    access: {
+      getAll: () => window.electronAPI.access.getAll(),
+      logToday: () => window.electronAPI.access.logToday(),
+    }
   };
 
   const localProvider = {
@@ -38,7 +46,31 @@ const Storage = (() => {
         return Promise.resolve();
       },
     },
-  };
+
+    sessions: {
+    getAll: () => JSON.parse(localStorage.getItem('sessions') || '[]'),
+    add: (session) => {
+      const data = JSON.parse(localStorage.getItem('sessions') || '[]');
+      data.push(session);
+      localStorage.setItem('sessions', JSON.stringify(data));
+      return Promise.resolve(); 
+    },
+  },
+
+  access: {
+    getAll: () => JSON.parse(localStorage.getItem('access') || '[]'),
+    logToday: () => {
+      const data = JSON.parse(localStorage.getItem('access') || '[]');
+      const today = new Date().toISOString().slice(0, 10);
+
+      if (!data.some(e => e.date === today)) {
+        data.push({ date: today });
+        localStorage.setItem('access', JSON.stringify(data));
+        return Promise.resolve();
+      }
+    },
+  }
+};
 
   return isElectron() ? electronProvider : localProvider;
 })();

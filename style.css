@@ -329,3 +329,59 @@ button:disabled { opacity: 0.4; cursor: not-allowed; }
   display: flex;
   gap: 10px;
 }
+
+.report-subpanel {
+  display: none;
+}
+
+.report-subpanel.active {
+  display: block;
+}
+
+.report-subtab-btn.active {
+  background: #e94560;
+  color: white;
+}
+#report-summary {
+  width: 100%;
+  height: 320px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#report-summary canvas {
+  width: 100%;
+  height: 100%;
+  max-width: 700px;
+}
+
+.session-item{
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  background: #16213e;
+  border: 1px solid #0f3460;
+  border-radius: 6px;
+  margin-bottom: 8px;
+}
+
+.rank-badge {
+  font-size: 1.3rem;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 10px;
+  background: #0f3460;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: #e94560;
+  transition: width 0.3s ease;
+}

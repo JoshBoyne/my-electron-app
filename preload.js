@@ -9,4 +9,12 @@ contextBridge.exposeInMainWorld('electronAPI', {
     getAll: ()      => ipcRenderer.invoke('mood:getAll'),
     save:   (entry) => ipcRenderer.invoke('mood:save', entry),
   },
+  sessions: {
+    getAll: () => ipcRenderer.invoke('sessions:getAll'),
+    add: (session) => ipcRenderer.invoke('sessions:add', session),
+  },
+  access: {
+    getAll: () => ipcRenderer.invoke('access:getAll'),
+    logToday: () => ipcRenderer.invoke('access:logToday'),
+  }
 });

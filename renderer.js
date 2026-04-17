@@ -4,9 +4,16 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
     document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
     btn.classList.add('active');
     document.getElementById(btn.dataset.tab).classList.add('active');
+
+    if(btn.dataset.tab === 'report'){
+      initReport();
+    }
   });
 });
 
 initNotes(); 
 initMood();
 initPomodoro();
+initReport();
+initReportTabs();
+Storage.access.logToday();

@@ -33,13 +33,34 @@ ipcMain.handle('mood:save',   (_, entry) => {
   writeStore('mood', log);
 });
 
+ipcMain.handle('sessions:getAll', () => readStore('sessions'));
+ipcMain.handle('sessions:add', (_, session) => {
+  const log = readStore('sessions');
+  log.push(session);
+  writeStore('sessions', log);
+})
+
+ipcMain.handle('access:getAll', () => readStore('access'));
+ipcMain.handle('access:logToday', () => {
+  const log = readStore('access');
+  const today = new Date().toISOString().slice(0, 10);
+
+  if(!log.some(e => e.date === today)){
+    log.push({date: today});
+    writeStore('access', log);
+  }
+  return log;
+})
+
+
+
 function createWindow(){
   const win = new BrowserWindow({
     width: 800,
     height: 600,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
-      contextIsolation: true,
+      contextIsolation: true, 
       nodeIntegration: false, 
     },
   });

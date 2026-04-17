@@ -1,9 +1,10 @@
-
 const POMODORO_PHASES = { IDLE: 'idle', WORK: 'work', BREAK: 'break' };
-const WORK_SECONDS  = 25 * 60;
-const BREAK_SECONDS = 5  * 60;
+const WORK_SECONDS  = 1 * 60; 
+const BREAK_SECONDS = 1 * 60;  
 const RING_RADIUS   = 90;
-const RING_CIRCUMFERENCE = 2 * Math.PI * RING_RADIUS; // ≈ 565.5
+const RING_CIRCUMFERENCE = 2 * Math.PI * RING_RADIUS; 
+const durationMinutes =
+  Math.round((Date.now() - new Date(state.startedAt)) / 60000);
 
 function formatTime(seconds) {
   const m = Math.floor(seconds / 60).toString().padStart(2, '0');
@@ -21,21 +22,32 @@ function getStrokeDashoffset(progress) {
 
 
 function initPomodoro() {
-  const displayEl  = document.getElementById('pomodoro-time');
-  const ringEl     = document.getElementById('pomodoro-ring');
-  const phaseEl    = document.getElementById('pomodoro-phase');
+  const displayEl     = document.getElementById('pomodoro-time');
+  const ringEl        = document.getElementById('pomodoro-ring');
+  const phaseEl       = document.getElementById('pomodoro-phase');
   const startWorkBtn  = document.getElementById('pomodoro-start-work');
   const startBreakBtn = document.getElementById('pomodoro-start-break');
   const resetBtn      = document.getElementById('pomodoro-reset');
 
-  ringEl.setAttribute('r',  RING_RADIUS);
+  ringEl.setAttribute('r', RING_RADIUS);
   ringEl.setAttribute('stroke-dasharray', RING_CIRCUMFERENCE);
+
+  if (Notification.permission === 'default') {
+    Notification.requestPermission();
+  }
+
+  function notify(title, body) {
+    if (Notification.permission === 'granted') {
+      new Notification(title, { body });
+    }
+  }
 
   let state = {
     phase:      POMODORO_PHASES.IDLE,
     remaining:  WORK_SECONDS,
     total:      WORK_SECONDS,
     intervalId: null,
+    startedAt: null,
   };
 
   function render() {
@@ -72,11 +84,26 @@ function initPomodoro() {
         state.remaining = 0;
         clearTimer();
         if (state.phase === POMODORO_PHASES.WORK) {
+
+      const durationMinutes =
+      Math.round((Date.now() - new Date(state.startedAt)) / 60000);
+
+      Storage.sessions.add({
+        id: Date.now().toString(36) + Math.random().toString(36).slice(2),
+        date: new Date().toISOString().slice(0, 10),
+        startedAt: state.startedAt,
+        completedAt: new Date().toISOString(),
+        durationMinutes,
+        type: 'work',
+      });
+
+          notify('Focus session done'); 
           state.phase     = POMODORO_PHASES.BREAK;
           state.remaining = BREAK_SECONDS;
           state.total     = BREAK_SECONDS;
           startCountdown();
         } else {
+          notify('Break over'); 
           state.phase     = POMODORO_PHASES.IDLE;
           state.remaining = WORK_SECONDS;
           state.total     = WORK_SECONDS;
@@ -91,6 +118,7 @@ function initPomodoro() {
     state.phase     = POMODORO_PHASES.WORK;
     state.remaining = WORK_SECONDS;
     state.total     = WORK_SECONDS;
+    state.startedAt = new Date().toISOString();
     startCountdown();
     render();
   });
